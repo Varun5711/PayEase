@@ -81,6 +81,8 @@ router.post("/transfer", isLoggedIn, async (req, res) => {
       status: "completed",
       timestamp: new Date()
     });
+
+    console.log("sent");
     
     req.flash("success", `Sent ${transferAmount} coins to ${receiver.username}.`);
     res.redirect("/dashboard");

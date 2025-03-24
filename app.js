@@ -17,7 +17,7 @@ const authRouter = require("./routes/auth/auth.js");
 const homeRouter = require("./routes/home/home.js");
 const dashboardRouter = require("./routes/dashboard/dashboard.js");
 
-const MONGO_URL = process.env.ATLAS_DB_URL;
+const MONGO_URL = "mongodb://localhost:27017/e-rupee";
 
 async function main() {
     mongoose.connect(MONGO_URL);
@@ -77,7 +77,6 @@ app.use((req, res, next) => {
     res.locals.successMsg = req.flash("success");
     res.locals.errorMsg = req.flash("error");
     res.locals.currentUser = req.user || null; // Prevents `undefined` issues
-    console.log("Current User:", req.user); // Debugging
     next();
 });
 
@@ -85,6 +84,4 @@ app.use("/", homeRouter);
 app.use("/", authRouter);
 app.use("/", dashboardRouter);
 
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-});
+app.listen(3000);
