@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Pay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <header class="text-center mb-4">
+            <h1 class="display-4">Quick Pay</h1>
+            <p>Welcome, <%= user.name %>. Pay your bills quickly and easily.</p>
+        </header>
+
+        <main>
+            <% if (billers && billers.length > 0) { %>
+                <section class="quick-pay-options">
+                    <h2>Your Billers</h2>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <% billers.forEach(biller => { %>
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="biller-logo me-3">
+                                                <% if (biller.logoUrl) { %>
+                                                    <img src="<%= biller.logoUrl %>" alt="<%= biller.name %> logo" class="img-fluid" style="width: 40px;">
+                                                <% } else { %>
+                                                    <div class="logo-placeholder text-center" style="width: 40px; height: 40px; background-color: #f1f1f1; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+                                                        <%= biller.name.charAt(0) %>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="biller-info">
+                                                <h5 class="card-title"><%= biller.name %></h5>
+                                                <p class="card-text mb-1">Account: <%= biller.accountNumber %></p>
+                                                <% if (biller.dueDate) { %>
+                                                    <p class="card-text mb-1">Due: <%= new Date(biller.dueDate).toLocaleDateString() %></p>
+                                                <% } %>
+                                                <% if (biller.amount) { %>
+                                                    <p class="card-text mb-1">Amount: $<%= biller.amount.toFixed(2) %></p>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-end">
+                                        <form action="/bill/pay/<%= biller._id %>" method="POST">
+                                            <% if (!biller.amount) { %>
+                                                <div class="mb-3">
+                                                    <label for="amount-<%= biller._id %>" class="form-label">Amount ($):</label>
+                                                    <input type="number" id="amount-<%= biller._id %>" name="amount" class="form-control" min="0.01" step="0.01" required>
+                                                </div>
+                                            <% } %>
+                                            <button type="submit" class="btn btn-primary">Pay Now</button>
+                                        </form>
+                                        <a href="/bill/details/<%= biller._id %>" class="btn btn-link">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </section>
+            <% } else { %>
+                <div class="text-center">
+                    <p>You don't have any quick pay options set up yet.</p>
+                    <a href="/bill/add" class="btn btn-success">Add a Biller</a>
+                </div>
+            <% } %>
+
+            <section class="quick-actions mt-4 text-center">
+                <a href="/dashboard/bill/history" class="btn btn-secondary m-2">Payment History</a>
+                <a href="/bill/manage" class="btn btn-warning m-2">Manage Billers</a>
+                <a href="/dashboard" class="btn btn-info m-2">Back to Dashboard</a>
+            </section>
+        </main>
+
+        <footer class="mt-5 text-center">
+            <p>&copy; <%= new Date().getFullYear() %> Your Banking App. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

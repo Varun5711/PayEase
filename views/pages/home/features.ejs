@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Features | e-Rupee</title>
+    <link rel="icon" type="image/gif" href="/images/main.gif">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .features-header {
+            background: linear-gradient(135deg, #1f1c2c, #928DAB);
+            color: white;
+            padding: 50px 0;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .features-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwIEwxMDAgMTAwIE0xMDAgMCBMMCAxMDAiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvc3ZnPg==');
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .features-header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            border-bottom: 5px solid transparent;
+            border-image: linear-gradient(to right, #f33c00, #ffcc00);
+            border-image-slice: 1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #f33c00, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .feature-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .rbi-badge:hover {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.05);
+            color: #666;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 60px 0;
+            margin-top: 60px;
+            position: relative;
+        }
+        
+        .cta-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #f33c00, #ffcc00);
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #f33c00, #ffcc00);
+            border-radius: 2px;
+        }
+        
+        .comparison-table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(90deg, #1f1c2c, #928DAB);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .comparison-table .feature-check {
+            color: #28a745;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-table .feature-times {
+            color: #dc3545;
+            font-size: 1.2rem;
+        }
+        
+        .highlight-cell {
+            background-color: rgba(243, 60, 0, 0.05);
+            font-weight: bold;
+        }
+        
+        .govt-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #f33c00, #ffcc00);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 10px;
+            vertical-align: middle;
+            text-transform: uppercase;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @media (max-width: 768px) {
+            .feature-card {
+                margin-bottom: 30px;
+            }
+            
+            .cta-section {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <%- include('../../layouts/navbar') %>
+
+    <!-- Features Header -->
+    <section class="features-header">
+        <div class="container features-header-content text-center">
+            <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">e-Rupee Features</h1>
+            <p class="fs-5 mb-4" data-aos="fade-up" data-aos-delay="100">Experience the future of digital currency with RBI's official CBDC</p>
+            <div class="d-flex justify-content-center align-items-center gap-2 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <span class="badge bg-light text-dark p-2">
+                    <i class="bi bi-shield-check"></i> RBI Regulated
+                </span>
+                <span class="badge bg-light text-dark p-2">
+                    <i class="bi bi-currency-exchange"></i> 100% Backed by INR
+                </span>
+                <span class="badge bg-light text-dark p-2">
+                    <i class="bi bi-x-circle"></i> Zero Transaction Fees
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section class="container mb-5">
+        <h2 class="text-center section-title" data-aos="fade-up">Key Features of e-Rupee</h2>
+        
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card p-4">
+                    <span class="rbi-badge"><i class="bi bi-patch-check-fill"></i> RBI Backed</span>
+                    <img src="/images/Transaction Icons.gif" alt="Instant Transfers" class="feature-icon floating">
+                    <h3 class="feature-title">Instant Transfers</h3>
+                    <p class="feature-description">Send and receive e-Rupee instantly with zero waiting time, just like cash but digital. Eliminate transaction delays in your daily payments.</p>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card p-4">
+                    <span class="rbi-badge"><i class="bi bi-patch-check-fill"></i> RBI Backed</span>
+                    <img src="/images/Security Handshake.gif" alt="Advanced Security" class="feature-icon floating">
+                    <h3 class="feature-title">Advanced Security</h3>
+                    <p class="feature-description">Enjoy bank-grade security with blockchain technology. Your digital currency is protected by the most advanced encryption standards available.</p>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card p-4">
+                    <span class="rbi-badge"><i class="bi bi-patch-check-fill"></i> RBI Backed</span>
+                    <img src="/images/Reward Icon.gif" alt="Cashback & Rewards" class="feature-icon floating">
+                    <h3 class="feature-title">Cashback & Rewards</h3>
+                    <p class="feature-description">Earn special cashbacks and rewards when you use e-Rupee for payments. Government-backed incentives to promote digital transactions.</p>
+                </div>
+            </div>
+            
+            <!-- Feature 5 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-card p-4">
+                    <span class="rbi-badge"><i class="bi bi-patch-check-fill"></i> RBI Backed</span>
+                    <img src="/images/bill.gif" alt="Direct Bill Payments" class="feature-icon floating">
+                    <h3 class="feature-title">Direct Bill Payments</h3>
+                    <p class="feature-description">Pay utility bills, taxes, and government fees directly using e-Rupee with special incentives from participating government services.</p>
+                </div>
+            </div>
+            
+            <!-- Feature 6 -->
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-card p-4">
+                    <span class="rbi-badge"><i class="bi bi-patch-check-fill"></i> RBI Backed</span>
+                    <img src="/images/Thinking Money Icon.gif" alt="UPI Integration" class="feature-icon floating">
+                    <h3 class="feature-title">UPI Integration</h3>
+                    <p class="feature-description">Seamlessly integrate with existing UPI infrastructure. Use your favorite UPI apps with the added benefits of CBDC technology.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Comparison Table Section -->
+    <section class="container mb-5">
+        <h2 class="text-center section-title" data-aos="fade-up">How e-Rupee Compares</h2>
+        
+        <div class="table-responsive" data-aos="fade-up" data-aos-delay="100">
+            <table class="table comparison-table">
+                <thead>
+                    <tr>
+                        <th>Features</th>
+                        <th>e-Rupee <span class="govt-badge">Official</span></th>
+                        <th>UPI Apps</th>
+                        <th>Cash</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Government Backed</td>
+                        <td class="highlight-cell"><i class="bi bi-check-circle-fill feature-check"></i> Direct RBI Backing</td>
+                        <td><i class="bi bi-check-circle-fill feature-check"></i> Regulated</td>
+                        <td><i class="bi bi-check-circle-fill feature-check"></i> Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Transaction Fee</td>
+                        <td class="highlight-cell"><i class="bi bi-check-circle-fill feature-check"></i> Zero</td>
+                        <td><i class="bi bi-dash-circle-fill"></i> Varies</td>
+                        <td><i class="bi bi-check-circle-fill feature-check"></i> Zero</td>
+                    </tr>
+                    <tr>
+                        <td>Digital Record</td>
+                        <td class="highlight-cell"><i class="bi bi-check-circle-fill feature-check"></i> Yes</td>
+                        <td><i class="bi bi-check-circle-fill feature-check"></i> Yes</td>
+                        <td><i class="bi bi-x-circle-fill feature-times"></i> No</td>
+                    </tr>
+                    <tr>
+                        <td>Special Incentives</td>
+                        <td class="highlight-cell"><i class="bi bi-check-circle-fill feature-check"></i> Govt. Incentives</td>
+                        <td><i class="bi bi-dash-circle-fill"></i> Limited</td>
+                        <td><i class="bi bi-x-circle-fill feature-times"></i> No</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+    <!-- Merchant Benefits Section -->
+    <section class="container mb-5">
+        <h2 class="text-center section-title" data-aos="fade-up">Special Benefits for Merchants</h2>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="/images/merchant.gif" alt="Merchant Benefits" class="img-fluid rounded-4 shadow-lg mb-4 mb-lg-0">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="ps-lg-4">
+                    <h3 class="mb-4" style="color: #333;">Join the Digital Economy Revolution</h3>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="bg-light p-2 rounded-circle">
+                                <i class="bi bi-currency-exchange text-primary fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>Tax Benefits</h5>
+                            <p>Special GST benefits and tax incentives for businesses accepting e-Rupee payments.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="bg-light p-2 rounded-circle">
+                                <i class="bi bi-graph-up-arrow text-primary fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>Zero Processing Fees</h5>
+                            <p>No transaction processing fees compared to credit cards and other payment gateways.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-start">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="bg-light p-2 rounded-circle">
+                                <i class="bi bi-shield-check text-primary fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>Instant Settlement</h5>
+                            <p>No waiting period for fund settlements. Get your money instantly in your account.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 class="mb-4" data-aos="fade-up">Ready to Experience the Future of Money?</h2>
+            <p class="mb-4 lead" data-aos="fade-up" data-aos-delay="100">Join thousands of users and merchants already using e-Rupee.</p>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <a href="/signup" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill me-3 shadow">
+                    <i class="bi bi-person-plus me-2"></i> Sign Up Now
+                </a>
+                <a href="/about" class="btn btn-outline-secondary btn-lg px-5 py-3 fw-bold rounded-pill shadow">
+                    <i class="bi bi-info-circle me-2"></i> Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include('../../layouts/footer') %>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            once: true,
+            easing: 'ease-out-cubic'
+        });
+        
+        // Additional GSAP animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate table rows
+            gsap.from(".comparison-table tbody tr", {
+                opacity: 0,
+                y: 20,
+                stagger: 0.1,
+                duration: 0.5,
+                scrollTrigger: {
+                    trigger: ".comparison-table",
+                    start: "top 80%"
+                }
+            });
+            
+            // Animate feature cards on hover
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card.querySelector('.feature-icon'), {
+                        scale: 1.1,
+                        duration: 0.3
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card.querySelector('.feature-icon'), {
+                        scale: 1,
+                        duration: 0.3
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

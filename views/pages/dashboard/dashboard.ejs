@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard - Coin Wallet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .transaction-card {
+            transition: transform 0.2s;
+        }
+        .transaction-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(to right, #0d6efd, #0a58ca);
+        }
+        .bg-gradient-success {
+            background: linear-gradient(to right, #198754, #157347);
+        }
+        .bg-gradient-info {
+            background: linear-gradient(to right, #0dcaf0, #0aa2c0);
+        }
+        .bg-gradient-warning {
+            background: linear-gradient(to right, #ffc107, #cc9a06);
+        }
+        .rounded-xl {
+            border-radius: 1rem;
+        }
+        .dashboard-stat {
+            position: relative;
+            overflow: hidden;
+        }
+        .dashboard-stat .stat-icon {
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
+            opacity: 0.2;
+            font-size: 4rem;
+        }
+        .transaction-note {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+        .text-truncate-custom {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-wallet me-2"></i>
+                <span>Coin Wallet</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transactions"><i class="fas fa-exchange-alt me-1"></i> Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/bill"><i class="fas fa-coins"></i> Pay Bills</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span class="d-none d-sm-inline"><%= user.username %></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/"><i class="fas fa-home me-1"></i> Home</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <% if (messages.success || messages.error) { %>
+        <div class="row">
+            <div class="col-12">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> <%= messages.success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> <%= messages.error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dashboard-stat text-white bg-gradient-primary h-100 rounded-xl">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Your Balance</h6>
+                                <h3 class="card-text"><strong><%= user.balance %></strong></h3>
+                                <p class="mb-0">coins</p>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dashboard-stat text-white bg-gradient-success h-100 rounded-xl">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Sent</h6>
+                                <h3 class="card-text"><strong><%= transactions.filter(t => t.sender.username === user.username).reduce((sum, t) => sum + t.amount, 0) %></strong></h3>
+                                <p class="mb-0">outgoing coins</p>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dashboard-stat text-white bg-gradient-info h-100 rounded-xl">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Received</h6>
+                                <h3 class="card-text"><strong><%= transactions.filter(t => t.receiver.username === user.username).reduce((sum, t) => sum + t.amount, 0) %></strong></h3>
+                                <p class="mb-0">incoming coins</p>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card dashboard-stat text-white bg-gradient-warning h-100 rounded-xl">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-white-50">Your Rank</h6>
+                                <h3 class="card-text"><strong>#<%= leaderboard.findIndex(u => u.username === user.username) + 1 || '?' %></strong></h3>
+                                <p class="mb-0">on leaderboard</p>
+                            </div>
+                        </div>
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <ul class="nav nav-pills nav-fill mb-3" id="mainTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button">
+                            <i class="fas fa-exchange-alt me-1"></i> Transactions
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard" type="button">
+                            <i class="fas fa-trophy me-1"></i> Leaderboard
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="mainTabsContent">
+                    <div class="tab-pane fade show active" id="transactions" role="tabpanel">
+                        <div class="card shadow-sm rounded-xl">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                                <h5 class="mb-0">Recent Transactions</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <% if (transactions.length === 0) { %>
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">No recent transactions.</p>
+                                    </div>
+                                <% } else { %>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>User</th>
+                                                    <th>Amount</th>
+                                                    <th>Note</th>
+                                                    <th>Date</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% transactions.forEach(transaction => { %>
+                                                    <% const isSender = transaction.sender.username === user.username; %>
+                                                    <tr>
+                                                        <td>
+                                                            <% if (isSender) { %>
+                                                                <span class="badge bg-light text-dark">
+                                                                    <i class="fas fa-arrow-up text-danger me-1"></i> Sent
+                                                                </span>
+                                                            <% } else { %>
+                                                                <span class="badge bg-light text-dark">
+                                                                    <i class="fas fa-arrow-down text-success me-1"></i> Received
+                                                                </span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-truncate-custom">
+                                                                <%= isSender ? transaction.receiver.username : transaction.sender.username %>
+                                                            </span>
+                                                        </td>
+                                                        <td class="<%= isSender ? 'text-danger' : 'text-success' %>">
+                                                            <%= isSender ? '-' : '+' %><%= transaction.amount %> coins
+                                                        </td>
+                                                        <td>
+                                                            <% if (transaction.note) { %>
+                                                                <span class="transaction-note" title="<%= transaction.note %>">
+                                                                    <%= transaction.note %>
+                                                                </span>
+                                                            <% } else { %>
+                                                                <span class="text-muted">-</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td><small class="text-muted"><%= transaction.date || 'Today' %></small></td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-secondary">
+                                                                <i class="fas fa-info-circle"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="card-footer bg-white text-center py-3">
+                                        <a href="/transactions" class="btn btn-outline-primary">
+                                            <i class="fas fa-history me-1"></i> View All Transactions
+                                        </a>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="leaderboard" role="tabpanel">
+                        <div class="card shadow-sm rounded-xl">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                                <h5 class="mb-0">Top Users Leaderboard</h5>
+                                <select class="form-select form-select-sm" style="width: auto;">
+                                    <option>All Time</option>
+                                    <option>This Month</option>
+                                    <option>This Week</option>
+                                </select>
+                            </div>
+                            <div class="card-body p-0">
+                                <% if (leaderboard.length === 0) { %>
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">No leaderboard data available.</p>
+                                    </div>
+                                <% } else { %>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>User</th>
+                                                    <th>Balance</th>
+                                                    <th>Transactions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% leaderboard.forEach((user, index) => { 
+                                                    const isCurrentUser = user.username === user.username;
+                                                %>
+                                                    <tr<%= isCurrentUser ? ' class="table-primary"' : '' %>>
+                                                        <td>
+                                                            <% if (index === 0) { %>
+                                                                <span class="badge rounded-pill bg-warning text-dark">
+                                                                    <i class="fas fa-crown"></i> 1
+                                                                </span>
+                                                            <% } else if (index === 1) { %>
+                                                                <span class="badge rounded-pill bg-secondary">
+                                                                    <i class="fas fa-medal"></i> 2
+                                                                </span>
+                                                            <% } else if (index === 2) { %>
+                                                                <span class="badge rounded-pill bg-danger">
+                                                                    <i class="fas fa-award"></i> 3
+                                                                </span>
+                                                            <% } else { %>
+                                                                <span class="badge rounded-pill bg-light text-dark">
+                                                                    <%= index + 1 %>
+                                                                </span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar bg-light text-primary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                                                    <i class="fas fa-user"></i>
+                                                                </div>
+                                                                <div>
+                                                                    <%= user.username %>
+                                                                    <% if (isCurrentUser) { %>
+                                                                        <span class="badge bg-primary ms-1">You</span>
+                                                                    <% } %>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td><strong><%= user.balance.toLocaleString() %></strong> coins</td>
+                                                        <td>
+                                                            <%= transactions.filter(t => 
+                                                                t.sender.username === user.username || 
+                                                                t.receiver.username === user.username
+                                                            ).length %> total
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm rounded-xl mb-4">
+                    <div class="card-header bg-gradient-success text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Send Coins</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/transfer" method="POST">
+                            <div class="mb-3">
+                                <label for="receiverId" class="form-label">Recipient:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="receiverId" name="receiverId" placeholder="Enter username" list="friendsList" required>
+                                </div>
+                                <datalist id="friendsList">
+                                    <% transactions.forEach(t => { 
+                                        const friend = t.sender.username === user.username ? t.receiver.username : t.sender.username;
+                                    %>
+                                        <option value="<%= friend %>">
+                                    <% }); %>
+                                </datalist>
+                            </div>
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                    <input type="number" class="form-control" id="amount" name="amount" min="1" max="<%= user.balance %>" placeholder="Amount" required>
+                                    <span class="input-group-text">coins</span>
+                                </div>
+                                <div class="form-text">Available: <%= user.balance %> coins</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="note" class="form-label">Note (Optional):</label>
+                                <textarea class="form-control" id="note" name="note" rows="2" placeholder="Add a message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Send Coins
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card shadow-sm rounded-xl mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-primary">
+    <i class="fas fa-qrcode me-2"></i>Show My QR Code
+</a>
+<a href="/stats" class="btn btn-outline-primary">
+    <i class="fas fa-chart-line me-2"></i>View Stats
+</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm rounded-xl">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Recent Contacts</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <% 
+                                const contacts = [...new Set(
+                                    transactions.map(t => 
+                                        t.sender.username === user.username ? t.receiver.username : t.sender.username
+                                    )
+                                )].slice(0, 5);
+                                if (contacts.length === 0) {
+                            %>
+                                <li class="list-group-item text-center py-4">
+                                    <i class="fas fa-users text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">No recent contacts</p>
+                                </li>
+                            <% } else { 
+                                contacts.forEach(contact => {
+                            %>
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-light text-primary rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0"><%= contact %></h6>
+                                                <small class="text-muted">
+                                                    <%= transactions.filter(t => 
+                                                        (t.sender.username === contact && t.receiver.username === user.username) ||
+                                                        (t.receiver.username === contact && t.sender.username === user.username)
+                                                    ).length %> transactions
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary">
+                                        </button>
+                                    </div>
+                                </li>
+                            <% }); } %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-wallet me-2"></i>Coin Wallet</h5>
+                    <p class="text-muted">A simple way to send and receive digital coins.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 text-muted">&copy; 2025 Coin Wallet. All rights reserved.</p>
+                    <div class="mt-2">
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About | payEase</title>
+    <link rel="icon" type="image/gif" href="/images/main.gif">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff, #f1f1f1);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(20, 20, 31, 0.8), rgba(70, 70, 120, 0.8)), url('/images/digital_currency.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(31, 28, 44, 0.7);
+            z-index: -1;
+        }
+
+        .section-heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #FF6B6B, #FFD166);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .content-box {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .content-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .rbi-logo {
+            width: 120px;
+            height: auto;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -25px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FF6B6B, #FFD166);
+            z-index: 1;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, #FF6B6B, #4682B4);
+        }
+
+        .animate-element {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .bg-gradient-light {
+            background: linear-gradient(135deg, #ffffff, #f1f1f1);
+        }
+
+        .bg-gradient-dark {
+            background: linear-gradient(90deg, #1f1c2c, #928DAB);
+            color: white;
+        }
+
+        .partner-logo {
+            height: 60px;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: filter 0.3s, opacity 0.3s;
+        }
+
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
+        .quote-box {
+            background: linear-gradient(45deg, #1f1c2c, #928DAB);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 100px;
+            color: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #FF6B6B, #FFD166);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: 0.4s;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box h4 {
+            color: #333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box i {
+            font-size: 1.5rem;
+            background: linear-gradient(45deg, #FF6B6B, #FFD166);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../../layouts/navbar') %>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4 animate-element">India's Official Digital Currency</h1>
+                    <p class="lead mb-5 animate-element">The e-Rupee: Secured by RBI, Powered by Innovation</p>
+                    <img src="/images/main.gif" alt="e-Rupee" class="img-fluid mb-4 animate-element" style="max-width: 150px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is e-Rupee Section -->
+    <section class="py-5 bg-gradient-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 animate-element">
+                    <h2 class="section-heading">What is e-Rupee?</h2>
+                    <p class="fs-5 mb-4">The e-Rupee is India's official Central Bank Digital Currency (CBDC) issued by the Reserve Bank of India. It represents a digital form of the Indian Rupee and serves as legal tender in the digital economy.</p>
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="/images/secure.gif" alt="RBI Logo" class="rbi-logo me-4">
+                        <div>
+                            <h5 class="fw-bold">RBI Authorized</h5>
+                            <p class="mb-0">Fully regulated legal tender backed by the Government of India</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 animate-element">
+                    <div class="content-box">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <h5 class="fw-bold">December 2022</h5>
+                                <p>RBI launches the e-Rupee (CBDC) pilot project for retail users</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="fw-bold">February 2023</h5>
+                                <p>Expansion to more cities and integration with UPI ecosystem</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="fw-bold">October 2023</h5>
+                                <p>Nationwide rollout of e-Rupee with merchant partnerships</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5 class="fw-bold">March 2025</h5>
+                                <p>Now available for all Indian citizens with enhanced features</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section class="py-5 bg-gradient-dark">
+        <div class="container">
+            <h2 class="text-center text-white mb-5 animate-element">Core Benefits of e-Rupee</h2>
+            <div class="row">
+                <div class="col-lg-4 mb-4 animate-element">
+                    <div class="info-box">
+                        <h4><i class="bi bi-shield-lock-fill"></i> Government Backed</h4>
+                        <p style="color: black;">Issued directly by the Reserve Bank of India, ensuring the same trust and security as physical currency.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-element">
+                    <div class="info-box">
+                        <h4><i class="bi bi-lightning-fill"></i> Instant Settlements</h4>
+                        <p style="color: black;">Real-time payments with zero processing delays. Transactions are quick and effective all over the country, even without internet.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-element">
+                    <div class="info-box">
+                        <h4><i class="bi bi-wallet-fill"></i> Financial Inclusion</h4>
+                        <p style="color: black;">Use digital currency without requiring a traditional bank account, bringing millions into the digital economy.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-element">
+                    <div class="info-box">
+                        <h4><i class="bi bi-currency-exchange"></i> Reduced Costs</h4>
+                        <p style="color: black;">Lower transaction fees compared to traditional banking and payment systems.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-element">
+                    <div class="info-box">
+                        <h4><i class="bi bi-graph-up"></i> Transparent System</h4>
+                        <p style="color: black;">Enhanced traceability for legitimate transactions while maintaining user privacy.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 animate-element">
+                    <div class="info-box">
+                        <h4><i class="bi bi-globe2"></i> Global Compatibility</h4>
+                        <p style="color: black;">Designed to work with international CBDC systems for seamless global transactions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-5 bg-gradient-light">
+        <div class="container">
+            <h2 class="section-heading text-center animate-element">e-Rupee by Numbers</h2>
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4 animate-element">
+                    <div class="content-box h-100">
+                        <div class="stat-number">15M+</div>
+                        <p class="fs-5">Active Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4 animate-element">
+                    <div class="content-box h-100">
+                        <div class="stat-number">₹250B</div>
+                        <p class="fs-5">Transaction Volume</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4 animate-element">
+                    <div class="content-box h-100">
+                        <div class="stat-number">500K+</div>
+                        <p class="fs-5">Merchant Partners</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4 animate-element">
+                    <div class="content-box h-100">
+                        <div class="stat-number">100+</div>
+                        <p class="fs-5">Cities Covered</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Statement -->
+    <section class="py-5 bg-gradient-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 animate-element">
+                    <img src="/images/Thinking Money Icon.gif" alt="Future of Money" class="img-fluid mb-4">
+                </div>
+                <div class="col-lg-6 animate-element">
+                    <h2 class="section-heading">Our Mission</h2>
+                    <div class="quote-box mb-4">
+                        <p class="fs-5 mb-0">To create a secure, inclusive and efficient digital payment ecosystem that empowers every Indian citizen to participate in the digital economy.</p>
+                    </div>
+                    <p>The e-Rupee initiative aims to reduce the dependency on physical cash, lower transaction costs, and provide a safe alternative to private cryptocurrencies. We're building a future where digital transactions are accessible to all, regardless of their banking status.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="py-5 bg-gradient-light">
+        <div class="container">
+            <h2 class="section-heading text-center animate-element">Our Partners</h2>
+            <p class="text-center mb-5 animate-element">Collaborating with India's leading institutions to build a robust digital currency ecosystem</p>
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-2 col-4 mb-4 text-center animate-element">
+                    <img src="/images/Transaction Icons.gif" alt="SBI" class="partner-logo">
+                </div>
+                <div class="col-md-2 col-4 mb-4 text-center animate-element">
+                    <img src="/images/Security Handshake.gif" alt="HDFC" class="partner-logo">
+                </div>
+                <div class="col-md-2 col-4 mb-4 text-center animate-element">
+                    <img src="/images/Reward Icon.gif" alt="ICICI" class="partner-logo">
+                </div>
+                <div class="col-md-2 col-4 mb-4 text-center animate-element">
+                    <img src="/images/secure.gif" alt="Axis" class="partner-logo">
+                </div>
+                <div class="col-md-2 col-4 mb-4 text-center animate-element">
+                    <img src="/images/wallet.gif" alt="PNB" class="partner-logo">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-gradient-dark">
+        <div class="container text-center">
+            <h2 class="text-white mb-4 animate-element">Ready to Experience the Future of Money?</h2>
+            <p class="text-white mb-5 animate-element">Join millions of Indians who are already using e-Rupee for secure and instant transactions</p>
+            <a href="/signup" class="btn btn-light btn-lg px-5 py-3 fw-semibold shadow-lg animate-element">Get Started with e-Rupee</a>
+        </div>
+    </section>
+
+    <%- include('../../layouts/footer') %>
+
+    <!-- GSAP Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Register ScrollTrigger plugin
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Hero section animations
+            gsap.fromTo(".hero-section .animate-element",
+                { opacity: 0, y: 30 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 0.8, 
+                    stagger: 0.2,
+                    ease: "power2.out"
+                }
+            );
+
+            // Animate elements on scroll
+            gsap.utils.toArray(".animate-element").forEach((element) => {
+                gsap.fromTo(element,
+                    { opacity: 0, y: 30 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 85%",
+                            toggleActions: "play none none none"
+                        }
+                    }
+                );
+            });
+
+            // Timeline animation
+            gsap.fromTo(".timeline-item",
+                { opacity: 0, x: -20 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6,
+                    stagger: 0.2,
+                    scrollTrigger: {
+                        trigger: ".timeline",
+                        start: "top 80%"
+                    }
+                }
+            );
+
+            // Statistics counter animation
+            gsap.utils.toArray(".stat-number").forEach(stat => {
+                let target = parseFloat(stat.textContent.replace(/[^\d.-]/g, ''));
+                let suffix = stat.textContent.replace(/[\d.-]/g, '');
+                
+                gsap.fromTo(stat, 
+                    { innerHTML: "0" + suffix },
+                    {
+                        innerHTML: target + suffix,
+                        duration: 2,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: stat,
+                            start: "top 85%"
+                        },
+                        onUpdate: function() {
+                            if (target > 1000) {
+                                stat.innerHTML = Math.round(this.targets()[0].innerHTML) + suffix;
+                            }
+                        }
+                    }
+                );
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

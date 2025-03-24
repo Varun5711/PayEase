@@ -1,0 +1,413 @@
+<header class="main-header">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <!-- Animated Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <div class="logo-container">
+            <img src="/images/main.gif" alt="e-Rupee Logo" class="logo-image">
+          </div>
+          <span class="brand-text">payEase</span>
+        </a>
+        
+        <!-- Animated Hamburger Menu -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="/features">Features</a></li>
+            <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            
+            <% if (!currentUser) { %>
+              <li class="nav-item login-btn">
+                <a class="btn-glow" href="/login">
+                  <span>Login</span>
+                  <div class="btn-glow-effect"></div>
+                </a>
+              </li>
+            <% } else { %>
+              <li class="nav-item user-profile">
+                <div class="user-info">
+                  <div class="user-avatar">
+                    <a href="/profile">
+                      <span>👤</span>
+                    </a>
+                  </div>
+                  <p class="user-name"><%= currentUser.username %></p>
+                </div>
+                <a href="/logout" class="logout-btn">
+                  <span>Logout</span>
+                  <i class="logout-icon"></i>
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <style>
+    /* Modern Header Styling */
+    .main-header {
+      position: relative;
+      z-index: 1000;
+    }
+
+    .navbar {
+      background: linear-gradient(135deg,  #1f1c2c 0%, #928DAB 50%);
+      padding: 0.8rem 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .navbar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    
+    /* Animated Logo */
+    .logo-container {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      animation: pulse 3s infinite;
+    }
+    
+    .logo-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    
+    .logo-container:hover .logo-image {
+      transform: scale(1.1);
+    }
+    
+    .brand-text {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #fff, #c9d6ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      letter-spacing: 1px;
+    }
+    
+    /* Navigation Links */
+    .navbar-nav {
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .nav-link {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 0.5rem 1rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    .nav-link:hover {
+      color: #ffffff;
+      transform: translateY(-3px);
+    }
+    
+    .nav-link:hover::after {
+      width: 70%;
+    }
+    
+    /* Login Button */
+    .login-btn {
+    margin-left: 10px;
+}
+
+/* Versatile Glowing Button */
+.btn-glow {
+    position: relative;
+    display: inline-block;
+    padding: 12px 28px;
+    background: linear-gradient(45deg, #007BFF, #0056b3); /* Simple Blue Gradient */
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px; /* Slightly rounded for a clean look */
+    text-decoration: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.btn-glow:hover {
+    background: linear-gradient(45deg, #0056b3, #003f7f);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Active Click Effect */
+.btn-glow:active {
+    transform: scale(0.98);
+    box-shadow: 0 3px 8px rgba(0, 123, 255, 0.4);
+}
+
+/* Focus for Accessibility */
+.btn-glow:focus {
+    outline: 3px solid rgba(0, 123, 255, 0.7);
+    outline-offset: 3px;
+}
+
+    .btn-glow:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(106, 17, 203, 0.6);
+      color: white;
+    }
+    
+    .btn-glow-effect {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    
+    .btn-glow:hover .btn-glow-effect {
+      opacity: 1;
+      animation: ripple 1.5s infinite;
+    }
+    
+    /* User Profile */
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 15px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+    
+    .user-name {
+      margin: 0;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .logout-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      background: rgba(255, 59, 48, 0.2);
+      border: 1px solid rgba(255, 59, 48, 0.5);
+      color: #ff3b30;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background: rgba(255, 59, 48, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .logout-icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff3b30'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'%3E%3C/path%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    
+    /* Hamburger Menu */
+    .hamburger-icon {
+      width: 30px;
+      height: 24px;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .hamburger-icon span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: white;
+      border-radius: 3px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+    }
+    
+    .hamburger-icon span:nth-child(1) {
+      top: 0px;
+    }
+    
+    .hamburger-icon span:nth-child(2) {
+      top: 10px;
+    }
+    
+    .hamburger-icon span:nth-child(3) {
+      top: 20px;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .hamburger-icon span:nth-child(1) {
+      top: 10px;
+      transform: rotate(135deg);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .hamburger-icon span:nth-child(2) {
+      opacity: 0;
+      left: -60px;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .hamburger-icon span:nth-child(3) {
+      top: 10px;
+      transform: rotate(-135deg);
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+      }
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        margin: 0 -12px;
+        padding: 20px;
+        border-radius: 0 0 15px 15px;
+      }
+      
+      .navbar-nav {
+        gap: 15px;
+      }
+      
+      .nav-link {
+        padding: 10px 15px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      .user-profile {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+  
+  <script>
+    // Add event listener to navbar toggler
+    document.addEventListener('DOMContentLoaded', function() {
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      
+      navbarToggler.addEventListener('click', function() {
+        const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+        this.setAttribute('aria-expanded', !expanded);
+      });
+      
+      // Add hover effect for login button
+      const loginBtn = document.querySelector('.btn-glow');
+      if (loginBtn) {
+        loginBtn.addEventListener('mousemove', function(e) {
+          const x = e.pageX - this.offsetLeft;
+          const y = e.pageY - this.offsetTop;
+          
+          const effect = this.querySelector('.btn-glow-effect');
+          effect.style.top = y + 'px';
+          effect.style.left = x + 'px';
+        });
+      }
+      
+      // Add animation to nav links
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach((link, index) => {
+        link.style.animationDelay = (index * 0.1) + 's';
+        link.classList.add('fade-in');
+      });
+    });
+  </script>

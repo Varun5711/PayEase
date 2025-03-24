@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stats - Coin Wallet</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(to right, #0d6efd, #0a58ca);
+        }
+
+        .bg-gradient-success {
+            background: linear-gradient(to right, #198754, #157347);
+        }
+
+        .rounded-xl {
+            border-radius: 1rem;
+        }
+
+        .dashboard-stat {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-stat .stat-icon {
+            position: absolute;
+            bottom: -15px;
+            right: 10px;
+            opacity: 0.2;
+            font-size: 4rem;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #0d6efd;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- Main Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-wallet me-2"></i>
+                <span>Coin Wallet</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transactions"><i class="fas fa-exchange-alt me-1"></i>
+                            Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/stats"><i class="fas fa-chart-line me-1"></i> Stats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile"><i class="fas fa-user me-1"></i> Profile</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button"
+                            id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span class="d-none d-sm-inline">
+                                <%= user.username %>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i> Profile</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>
+                                    Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        <% if(messages.success && messages.success.length> 0) { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <%= messages.success %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+                <% if(messages.error && messages.error.length> 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= messages.error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <% } %>
+
+                        <!-- Page Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1 class="h3"><i class="fas fa-chart-line me-2"></i>Your Coin Statistics</h1>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary">Weekly</button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Summary -->
+                        <div class="row mb-4">
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card dashboard-stat text-white bg-gradient-primary h-100 rounded-xl">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-white-50">Total Volume</h6>
+                                                <h3 class="card-text"><strong>
+                                                        <%= transactionStats.totalVolume %>
+                                                    </strong></h3>
+                                                <p class="mb-0">lifetime coins</p>
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card dashboard-stat text-white bg-primary h-100 rounded-xl">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-white-50">Average Transaction</h6>
+                                                <h3 class="card-text"><strong>
+                                                        <%= transactionStats.averageAmount %>
+                                                    </strong></h3>
+                                                <p class="mb-0">coins per transfer</p>
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-calculator"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card dashboard-stat text-white bg-success h-100 rounded-xl">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-white-50">Unique Contacts</h6>
+                                                <h3 class="card-text"><strong>
+                                                        <%= transactionStats.uniqueContacts %>
+                                                    </strong></h3>
+                                                <p class="mb-0">trading partners</p>
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-3 mb-4">
+                                <div class="card dashboard-stat text-white bg-info h-100 rounded-xl">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="card-title text-white-50">Transaction Count</h6>
+                                                <h3 class="card-text"><strong>
+                                                        <%= transactionStats.count %>
+                                                    </strong></h3>
+                                                <p class="mb-0">total transfers</p>
+                                            </div>
+                                        </div>
+                                        <div class="stat-icon">
+                                            <i class="fas fa-exchange-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Main Chart Area -->
+                            <div class="col-lg-8">
+                                <!-- Transaction History Chart -->
+                                <div class="card shadow-sm rounded-xl mb-4">
+                                    <div
+                                        class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                                        <h5 class="mb-0">Transaction History</h5>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-secondary">7 days</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div style="height: 300px">
+                                            <canvas id="transactionHistoryChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Balance History Chart -->
+                                <div class="card shadow-sm rounded-xl mb-4">
+                                    <div
+                                        class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                                        <h5 class="mb-0">Balance History</h5>
+                                        <select class="form-select form-select-sm" style="width: auto;">
+                                            <option>Last 6 Months</option>
+                                            <option>Last 3 Months</option>
+                                            <option>Last 30 Days</option>
+                                        </select>
+                                    </div>
+                                    <div class="card-body">
+                                        <div style="height: 300px">
+                                            <canvas id="balanceHistoryChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar Stats -->
+                            <div class="col-lg-4">
+                                <!-- Top Trading Partners -->
+                                <div class="card shadow-sm rounded-xl mb-4">
+                                    <div class="card-header bg-white py-3">
+                                        <h5 class="mb-0">Top Trading Partners</h5>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <ul class="list-group list-group-flush">
+                                            <% if (transactionStats.topPartners && transactionStats.topPartners.length>
+                                                0) { %>
+                                                <% transactionStats.topPartners.forEach((partner, index)=> { %>
+                                                    <li class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="bg-light text-primary rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                                                    style="width: 36px; height: 36px;">
+                                                                    <span>
+                                                                        <%= index + 1 %>
+                                                                    </span>
+                                                                </div>
+                                                                <div>
+                                                                    <h6 class="mb-0">
+                                                                        <%= partner.username %>
+                                                                    </h6>
+                                                                    <small class="text-muted">
+                                                                        <%= partner.transactions %> transactions
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                            <span class="badge bg-primary rounded-pill">
+                                                                <%= partner.volume.toFixed(2) %> coins
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                    <% }); %>
+                                                        <% } else { %>
+                                                            <li class="list-group-item text-center">
+                                                                <p class="mb-0 text-muted">No trading partners yet.</p>
+                                                            </li>
+                                                            <% } %>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction Distribution -->
+                                <div class="card shadow-sm rounded-xl mb-4">
+                                    <div class="card-header bg-white py-3">
+                                        <h5 class="mb-0">Transaction Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="transactionDistributionChart" height="220"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Activity Heatmap -->
+                                <div class="card shadow-sm rounded-xl">
+                                    <div class="card-header bg-white py-3">
+                                        <h5 class="mb-0">Weekly Activity</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered text-center mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Mon</th>
+                                                        <th>Tue</th>
+                                                        <th>Wed</th>
+                                                        <th>Thu</th>
+                                                        <th>Fri</th>
+                                                        <th>Sat</th>
+                                                        <th>Sun</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="activityHeatmap">
+                                                    <!-- Will be populated with real data in script -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <span class="badge bg-light text-dark me-2">Low</span>
+                                            <span class="badge bg-primary bg-opacity-25 me-2"></span>
+                                            <span class="badge bg-primary bg-opacity-50 me-2"></span>
+                                            <span class="badge bg-primary bg-opacity-75 me-2"></span>
+                                            <span class="badge bg-primary">High</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-wallet me-2"></i>Coin Wallet</h5>
+                    <p class="text-muted">A simple way to send and receive digital coins.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 text-muted">&copy; 2025 Coin Wallet. All rights reserved.</p>
+                    <div class="mt-2">
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Charts JS -->
+    <script>
+        // Prepare activity data for the heatmap
+        function generateActivityHeatmap() {
+            const hours = ["Morning", "Afternoon", "Evening", "Night"];
+            const heatmapBody = document.getElementById('activityHeatmap');
+
+            // Clear existing content
+            heatmapBody.innerHTML = '';
+
+            // Get transaction data from server (will integrate real data later)
+            // For now using placeholder data that resembles real transaction patterns
+            const activityData = [
+                [0, 1, 2, 1, 3, 0, 0], // Morning
+                [2, 3, 2, 2, 1, 0, 0], // Afternoon
+                [1, 0, 1, 3, 4, 2, 0], // Evening
+                [0, 0, 0, 1, 0, 3, 1]  // Night
+            ];
+
+            hours.forEach((hour, hourIndex) => {
+                const row = document.createElement('tr');
+
+                // Add hour label cell
+                const hourCell = document.createElement('td');
+                hourCell.className = 'table-light';
+                hourCell.textContent = hour;
+                row.appendChild(hourCell);
+
+                // Add day cells
+                for (let i = 0; i < 7; i++) {
+                    const dayCell = document.createElement('td');
+                    const intensity = activityData[hourIndex][i];
+
+                    if (intensity === 0) {
+                        dayCell.className = 'bg-light';
+                    } else if (intensity === 1) {
+                        dayCell.className = 'bg-primary bg-opacity-25';
+                        dayCell.textContent = '1';
+                    } else if (intensity === 2) {
+                        dayCell.className = 'bg-primary bg-opacity-50';
+                        dayCell.textContent = '2';
+                    } else if (intensity === 3) {
+                        dayCell.className = 'bg-primary bg-opacity-75';
+                        dayCell.textContent = '3';
+                    } else {
+                        dayCell.className = 'bg-primary';
+                        dayCell.textContent = intensity;
+                    }
+
+                    row.appendChild(dayCell);
+                }
+
+                heatmapBody.appendChild(row);
+            });
+        }
+
+        // Helper function to group transactions by weekday
+        function groupTransactionsByWeekday() {
+            // Initialize weekdays array
+            const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const sentData = [];
+            const receivedData = [];
+
+            // Initialize data for each weekday
+            for (let i = 0; i < weekdays.length; i++) {
+                // Simulate sent amounts with random but realistic patterns
+                sentData[i] = Math.floor(Math.random() * 100) + 20;
+
+                // Simulate received amounts
+                receivedData[i] = Math.floor(Math.random() * 100) + 30;
+            }
+
+            return {
+                weekdays,
+                sent: sentData,
+                received: receivedData
+            };
+        }
+
+        // Helper function to generate balance history by weekday
+        function generateBalanceHistory() {
+            const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const balanceData = [];
+
+            // Get the current user balance from the EJS template
+            const currentBalance = parseFloat("<%= user.balance %>");
+
+            // Initialize with a starting balance
+            let initialBalance = currentBalance - Math.random() * 200; // Start with a value below current
+
+            // Generate random but somewhat realistic balance changes for each weekday
+            for (let i = 0; i < weekdays.length; i++) {
+                balanceData.push(initialBalance);
+                // Add some random variation to the balance
+                const change = Math.floor(Math.random() * 60) - 20; // Random value between -20 and +40
+                initialBalance += change;
+            }
+
+            // Make sure the last balance matches current balance
+            balanceData[6] = currentBalance;
+
+            return {
+                weekdays,
+                values: balanceData
+            };
+        }
+
+        // Calculate sent and received distribution
+        function getTransactionDistribution() {
+            // In a full implementation, this would use actual transaction data
+            // For now, using simulated distribution that reflects transactionStats
+            const totalVolume = parseFloat("<%= transactionStats.totalVolume %>");
+            const sentPercentage = 0.45; // Arbitrary split - in real implementation would be calculated
+
+            return {
+                sent: Math.round(totalVolume * sentPercentage),
+                received: Math.round(totalVolume * (1 - sentPercentage))
+            };
+        }
+
+        // Initialize all charts when DOM is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get transaction history data
+            const transactionHistory = groupTransactionsByWeekday();
+
+            // Get balance history data
+            const balanceHistory = generateBalanceHistory();
+
+            // Get transaction distribution data
+            const distributionData = getTransactionDistribution();
+
+            // Transaction History Chart
+            const transactionCtx = document.getElementById('transactionHistoryChart').getContext('2d');
+            const transactionChart = new Chart(transactionCtx, {
+                type: 'bar',
+                data: {
+                    labels: transactionHistory.weekdays,
+                    datasets: [{
+                        label: 'Sent',
+                        data: transactionHistory.sent,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Received',
+                        data: transactionHistory.received,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Balance History Chart
+            const balanceCtx = document.getElementById('balanceHistoryChart').getContext('2d');
+            const balanceChart = new Chart(balanceCtx, {
+                type: 'line',
+                data: {
+                    labels: balanceHistory.weekdays,
+                    datasets: [{
+                        label: 'Balance',
+                        data: balanceHistory.values,
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            // Transaction Distribution Chart
+            const distributionCtx = document.getElementById('transactionDistributionChart').getContext('2d');
+            const distributionChart = new Chart(distributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sent', 'Received'],
+                    datasets: [{
+                        data: [distributionData.sent, distributionData.received],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(75, 192, 192, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Generate Activity Heatmap
+            generateActivityHeatmap();
+        });</script>
+</body>
+
+</html>

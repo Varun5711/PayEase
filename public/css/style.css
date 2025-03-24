@@ -1,0 +1,8 @@
+.typing {
+    font-size: 24px;
+    font-weight: bold;
+    border-right: 2px solid black;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}

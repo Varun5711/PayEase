@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile - Coin Wallet</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Animation CSS library -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-light: #5dade2;
+            --secondary: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            background-color: rgba(52, 152, 219, 0.95);
+            backdrop-filter: blur(5px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            animation: slideInDown 0.6s ease;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            color: white;
+            margin-right: 20px;
+            transition: transform 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(93, 173, 226, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(93, 173, 226, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(93, 173, 226, 0);
+            }
+        }
+
+        .nav-pills .nav-link {
+            color: var(--secondary);
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .nav-pills .nav-link:hover:not(.active) {
+            background-color: rgba(52, 152, 219, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .stats-card {
+            padding: 20px;
+            text-align: center;
+            animation-delay: calc(var(--animation-order) * 0.1s);
+        }
+
+        .stats-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: countUp 2s ease forwards;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: calc(var(--animation-order) * 0.15s);
+        }
+
+        .transaction-item:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+            transform: translateX(5px);
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .transaction-icon.received {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+        }
+
+        .transaction-icon.sent {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--danger);
+        }
+
+        .transaction-item:hover .transaction-icon {
+            transform: scale(1.1);
+        }
+
+        .transaction-amount.positive {
+            color: var(--success);
+        }
+
+        .transaction-amount.negative {
+            color: var(--danger);
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(to right, #0d6efd, #0a58ca);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert {
+            animation: slideInDown 0.5s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Tab content animations */
+        .tab-pane {
+            animation: fadeTab 0.6s ease;
+        }
+
+        @keyframes fadeTab {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer animations */
+        footer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer .social-icon {
+            transition: all 0.3s ease;
+        }
+
+        footer .social-icon:hover {
+            transform: translateY(-5px);
+            color: var(--primary) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center animate__animated animate__fadeInLeft" href="/">
+                <i class="fas fa-wallet me-2"></i>
+                <span>Coin Wallet</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse animate__animated animate__fadeIn" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transactions"><i class="fas fa-exchange-alt me-1"></i> Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/profile"><i class="fas fa-user me-1"></i> Profile</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <% if (messages && (messages.success || messages.error)) { %>
+        <div class="row mb-4">
+            <div class="col-12">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> <%= messages.success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> <%= messages.error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="profile-header d-flex align-items-center animate__animated animate__fadeIn">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>
+                <h1 class="h3 mb-1"><%= user.username %></h1>
+                <p class="text-muted mb-2"><%= user.email %></p>
+                <button class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit me-1"></i> Edit Profile
+                </button>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card stats-card" style="--animation-order: 1;">
+                    <div class="stats-value"><%= user.balance ? user.balance.toLocaleString() : '0' %></div>
+                    <div class="text-muted">Current Balance</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card stats-card" style="--animation-order: 2;">
+                    <div class="stats-value">
+                        <%= transactions ? transactions.filter(t => t.sender.username === user.username).length : '0' %>
+                    </div>
+                    <div class="text-muted">Sent Transactions</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card stats-card" style="--animation-order: 3;">
+                    <div class="stats-value">
+                        <%= transactions ? transactions.filter(t => t.receiver.username === user.username).length : '0' %>
+                    </div>
+                    <div class="text-muted">Received Transactions</div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-pills nav-fill mb-4 animate__animated animate__fadeIn animate__delay-1s" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button">
+                    <i class="fas fa-exchange-alt me-1"></i> Transactions
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="wallet-tab" data-bs-toggle="tab" data-bs-target="#wallet" type="button">
+                    <i class="fas fa-wallet me-1"></i> Wallet
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button">
+                    <i class="fas fa-shield-alt me-1"></i> Security
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- Transactions Tab -->
+            <div class="tab-pane fade show active" id="transactions" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Transactions</h5>
+                            <a href="/dashboard" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus me-1"></i> New Transaction
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <% if (!transactions || transactions.length === 0) { %>
+                            <div class="text-center py-5 animate__animated animate__fadeIn">
+                                <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No transactions found.</p>
+                            </div>
+                        <% } else { %>
+                            <% transactions.slice(0, 5).forEach(function(transaction, index) { 
+                                const isSender = transaction.sender.username === user.username;
+                                const otherUser = isSender ? transaction.receiver.username : transaction.sender.username;
+                            %>
+                                <div class="transaction-item" style="--animation-order: <%= index + 1 %>;">
+                                    <div class="transaction-icon <%= isSender ? 'sent' : 'received' %>">
+                                        <i class="fas fa-arrow-<%= isSender ? 'up' : 'down' %>"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <strong><%= isSender ? 'Sent to ' : 'Received from ' %><%= otherUser %></strong>
+                                            <span class="transaction-amount <%= isSender ? 'negative' : 'positive' %>">
+                                                <%= isSender ? '-' : '+' %><%= transaction.amount %> coins
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between text-muted">
+                                            <small><%= transaction.date || 'Today' %></small>
+                                            <small><%= transaction.note || 'No note' %></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                            <div class="text-center mt-3 animate__animated animate__fadeIn animate__delay-1s">
+                                <a href="/transactions" class="btn btn-sm btn-outline-primary">View All Transactions</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wallet Tab -->
+            <div class="tab-pane fade" id="wallet" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Wallet Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-4 animate__animated animate__fadeIn">
+                                    <h6>Balance</h6>
+                                    <h3><%= user.balance ? user.balance.toLocaleString() : '0' %> coins</h3>
+                                </div>
+                                <div class="mb-4 animate__animated animate__fadeIn animate__delay-1s">
+                                    <h6>Account ID</h6>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="<%= user.accountId || user.username %>" readonly>
+                                        <button class="btn btn-outline-secondary" type="button">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mb-4 animate__animated animate__fadeIn animate__delay-2s">
+                                    <h6>Statistics</h6>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="border rounded p-3 text-center">
+                                                <div class="text-muted mb-1">Total Sent</div>
+                                                <h5 class="mb-0">
+                                                    <%= transactions ? transactions.filter(t => t.sender.username === user.username).reduce((sum, t) => sum + t.amount, 0) : '0' %> coins
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="border rounded p-3 text-center">
+                                                <div class="text-muted mb-1">Total Received</div>
+                                                <h5 class="mb-0">
+                                                    <%= transactions ? transactions.filter(t => t.receiver.username === user.username).reduce((sum, t) => sum + t.amount, 0) : '0' %> coins
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-primary text-white animate__animated animate__fadeIn">
+                                    <div class="card-body">
+                                        <h6 class="mb-3">Quick Actions</h6>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-light text-primary">
+                                                <i class="fas fa-paper-plane me-2"></i> Send Money
+                                            </button>
+                                            <button class="btn btn-outline-light">
+                                                <i class="fas fa-qrcode me-2"></i> Receive Money
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% if (leaderboard) { %>
+                                <div class="card mt-3 animate__animated animate__fadeIn animate__delay-1s">
+                                    <div class="card-body">
+                                        <h6 class="mb-3">Your Rank</h6>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <span class="badge bg-primary rounded-pill p-3 d-inline-block">
+                                                    <i class="fas fa-trophy"></i>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h4 class="mb-0">#<%= leaderboard.findIndex(u => u.username === user.username) + 1 || '?' %></h4>
+                                                <small class="text-muted">on the leaderboard</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div class="tab-pane fade" id="security" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">Security Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4 animate__animated animate__fadeIn">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="mb-0">Change Password</h6>
+                                    <p class="text-muted mb-0 small">
+                                        Last changed: <%= user.lastPasswordChange ? user.lastPasswordChange : 'Never' %>
+                                    </p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">Update</button>
+                            </div>
+                        </div>
+                        <div class="mb-4 animate__animated animate__fadeIn animate__delay-1s">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="mb-0">Two-Factor Authentication</h6>
+                                    <p class="text-muted mb-0 small">
+                                        <%= user.twoFactorEnabled ? 'Enabled' : 'Not enabled' %>
+                                    </p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <%= user.twoFactorEnabled ? 'Disable' : 'Enable' %>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-4 animate__animated animate__fadeIn animate__delay-2s">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="mb-0">Email Notifications</h6>
+                                    <p class="text-muted mb-0 small">
+                                        <%= user.emailNotifications ? 'Enabled for all transactions' : 'Disabled' %>
+                                    </p>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" <%= user.emailNotifications ? 'checked' : '' %>>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4 animate__animated animate__fadeIn animate__delay-3s">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="mb-0">Account Activity Log</h6>
+                                    <p class="text-muted mb-0 small">View your recent account activity</p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary">View Log</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 animate__animated animate__fadeIn">
+                    <h5><i class="fas fa-wallet me-2"></i>Coin Wallet</h5>
+                    <p class="text-muted">A simple way to send and receive digital coins.</p>
+                </div>
+                <div class="col-md-6 text-md-end animate__animated animate__fadeIn">
+                    <p class="mb-0 text-muted">&copy; 2025 Coin Wallet. All rights reserved.</p>
+                    <div class="mt-2">
+                        <a href="#" class="text-white me-3 social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3 social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white me-3 social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white social-icon"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS for animations -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 10) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Initialize animations for elements that load with the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set animation order for transaction items
+            const transactionItems = document.querySelectorAll('.transaction-item');
+            transactionItems.forEach((item, index) => {
+                item.style.animationDelay = `${(index * 0.1) + 0.3}s`;
+            });
+
+            // Handle tab transitions
+            const tabButtons = document.querySelectorAll('.nav-link');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Reset animation for the new tab content
+                    const targetId = this.getAttribute('data-bs-target');
+                    const targetPane = document.querySelector(targetId);
+                    
+                    if (targetPane) {
+                        targetPane.classList.remove('animate__animated', 'animate__fadeIn');
+                        void targetPane.offsetWidth; // Trigger reflow to restart animation
+                        targetPane.classList.add('animate__animated', 'animate__fadeIn');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

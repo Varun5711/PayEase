@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>e-Rupee | Digital Currency</title>
+    <!-- Bootstrap 5 CDN -->
+    <link rel="icon" type="image/png" href="/images/main.gif">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<style>
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    body {
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <!-- Header/Navbar -->
+    <%- include("../../layouts/navbar") %>
+
+    <!-- Hero Section -->
+    <section class="bg-primary text-white text-center py-5">
+        <div class="container">
+            <h1 class="blur-text">Welcome to payEase</h1>
+            <p class="lead blur-text">Secure, Fast & Government-backed Digital Currency.</p>
+            <a href="/signup" class="btn btn-light btn-lg blur-text">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container my-5">
+        <h2 class="text-center mb-4 blur-text">Why Use e-Rupee?</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <img src="/images/Transaction Icons.gif" alt="UPI Integration" class="img-fluid mb-3">
+                <h3 class="blur-text">UPI Integration</h3>
+                <p class="blur-text">Seamless payments with UPI & CBDC support.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="/images/Security Handshake.gif" alt="Security" class="img-fluid mb-3">
+                <h3 class="blur-text">High Security</h3>
+                <p class="blur-text">Blockchain-backed, government-approved transactions.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="/images/Reward Icon.gif" alt="Rewards" class="img-fluid mb-3">
+                <h3 class="blur-text">Incentives & Rewards</h3>
+                <p class="blur-text">Exclusive cashback & tax benefits for merchants.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action Section -->
+    <section class="text-white text-center py-5" style="background: linear-gradient(90deg, #1f1c2c, #928DAB);">
+        <div class="container">
+            <h2 class="fw-bold blur-text">Join the Digital Revolution</h2>
+            <p class="fs-5 blur-text">Start using e-Rupee for secure, fast, and efficient transactions.</p>
+            <a href="/signup" class="btn btn-outline-light btn-lg fw-semibold shadow-lg blur-text">Sign Up Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <%- include("../../layouts/footer") %>
+
+    <!-- GSAP Animation Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.fromTo(
+                ".blur-text",
+                { opacity: 0, filter: "blur(10px)", y: 50 },
+                { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.87, stagger: 0.2, ease: "power2.out" }
+            );
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
