@@ -12,7 +12,6 @@ const Notification = require('../models/notification.js');
  */
 const sendNotification = async (userId, title, message, type = 'info', template = null) => {
     try {
-        // Create notification record
         const notification = new Notification({
             userId,
             title,
@@ -22,13 +21,10 @@ const sendNotification = async (userId, title, message, type = 'info', template 
             createdAt: new Date()
         });
         
-        // Save notification to database
         await notification.save();
         
-        // Get user's notification preferences
         const user = await User.findById(userId);
         
-        // Send push notification if enabled
         if (user && user.notificationPreferences?.pushEnabled) {
             await sendPushNotification(user.deviceTokens, {
                 title,
@@ -38,7 +34,6 @@ const sendNotification = async (userId, title, message, type = 'info', template 
             });
         }
         
-        // Send email notification if enabled
         if (user && user.notificationPreferences?.emailEnabled && template) {
             await sendEmailNotification(user.email, title, message, template);
         }
@@ -46,7 +41,6 @@ const sendNotification = async (userId, title, message, type = 'info', template 
         return notification;
     } catch (err) {
         console.error('Error sending notification:', err);
-        // Still return an object even if notification fails
         return {
             userId,
             title,
@@ -69,9 +63,6 @@ const sendPushNotification = async (deviceTokens, data) => {
     }
     
     try {
-        // Implementation depends on push notification service (Firebase, OneSignal, etc.)
-        // This is a placeholder for the actual implementation
-        
         const fcm = require('../services/firebaseMessaging');
         await fcm.sendToDevices(deviceTokens, {
             notification: {
@@ -87,7 +78,6 @@ const sendPushNotification = async (deviceTokens, data) => {
         console.log(`Push notification sent to ${deviceTokens.length} devices`);
     } catch (err) {
         console.error('Error sending push notification:', err);
-        // Don't throw - we want the function to continue even if push fails
     }
 };
 
@@ -101,9 +91,6 @@ const sendPushNotification = async (deviceTokens, data) => {
  */
 const sendEmailNotification = async (email, subject, message, template) => {
     try {
-        // Implementation depends on email service (Nodemailer, SendGrid, etc.)
-        // This is a placeholder for the actual implementation
-        
         const emailService = require('../services/emailService');
         await emailService.sendTemplatedEmail(email, subject, template, {
             subject,
@@ -114,7 +101,6 @@ const sendEmailNotification = async (email, subject, message, template) => {
         console.log(`Email notification sent to ${email}`);
     } catch (err) {
         console.error('Error sending email notification:', err);
-        // Don't throw - we want the function to continue even if email fails
     }
 };
 
@@ -124,6 +110,7 @@ const sendEmailNotification = async (email, subject, message, template) => {
  * @param {number} limit - Maximum number of notifications to retrieve
  * @returns {Promise<Array>} - Array of notification objects
  */
+
 const getUnreadNotifications = async (userId, limit = 10) => {
     try {
         return await Notification.find({ userId, isRead: false })
@@ -140,6 +127,7 @@ const getUnreadNotifications = async (userId, limit = 10) => {
  * @param {string} notificationId - The notification ID
  * @returns {Promise<boolean>} - Success status
  */
+
 const markAsRead = async (notificationId) => {
     try {
         const result = await Notification.findByIdAndUpdate(

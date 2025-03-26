@@ -14,12 +14,10 @@ router.get("/dashboard", isLoggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     
-    // Get recent transactions
     const transactions = await Transaction.find({
       $or: [{ sender: user._id }, { receiver: user._id }]
     }).populate("sender receiver", "username").sort({ timestamp: -1 }).limit(5);
     
-    // Calculate total sent & received coins
     const totalSent = transactions
       .filter(t => t.sender.equals(user._id))
       .reduce((sum, t) => sum + t.amount, 0);
@@ -28,7 +26,6 @@ router.get("/dashboard", isLoggedIn, async (req, res) => {
       .filter(t => t.receiver.equals(user._id))
       .reduce((sum, t) => sum + t.amount, 0);
     
-    // ✅ Fetch Leaderboard (Top 5 Users by Coin Balance)
     const leaderboard = await User.find().sort({ balance: -1 }).limit(5).select("username balance");
     
     res.render("pages/dashboard/dashboard.ejs", {
@@ -37,7 +34,7 @@ router.get("/dashboard", isLoggedIn, async (req, res) => {
       totalSent,
       totalReceived,
       transactionCount: transactions.length,
-      leaderboard, // Pass leaderboard data to frontend
+      leaderboard,
       messages: req.flash()
     });
   } catch (error) {
@@ -46,7 +43,6 @@ router.get("/dashboard", isLoggedIn, async (req, res) => {
   }
 });
 
-// ✅ TRANSFER COINS
 router.post("/transfer", isLoggedIn, async (req, res) => {
   try {
     const { receiverId, amount, note } = req.body;
@@ -69,7 +65,6 @@ router.post("/transfer", isLoggedIn, async (req, res) => {
       return res.redirect("/dashboard");
     }
     
-    // Atomic balance update
     await User.updateOne({ _id: sender._id }, { $inc: { balance: -transferAmount } });
     await User.updateOne({ _id: receiver._id }, { $inc: { balance: transferAmount } });
     
@@ -81,8 +76,6 @@ router.post("/transfer", isLoggedIn, async (req, res) => {
       status: "completed",
       timestamp: new Date()
     });
-
-    console.log("sent");
     
     req.flash("success", `Sent ${transferAmount} coins to ${receiver.username}.`);
     res.redirect("/dashboard");
@@ -93,11 +86,10 @@ router.post("/transfer", isLoggedIn, async (req, res) => {
   }
 });
 
-// ✅ TRANSACTION HISTORY WITH FILTERING
 router.get("/transactions", isLoggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    const filter = req.query.filter || "all"; // Default to 'all' if no filter is provided
+    const filter = req.query.filter || "all";
 
     let filterQuery = { $or: [{ sender: user._id }, { receiver: user._id }] };
 
@@ -114,7 +106,7 @@ router.get("/transactions", isLoggedIn, async (req, res) => {
     res.render("pages/dashboard/transactions", { 
       user, 
       transactions, 
-      filter, // Pass filter type to frontend
+      filter,
       messages: req.flash() 
     });
   } catch (error) {
@@ -123,7 +115,6 @@ router.get("/transactions", isLoggedIn, async (req, res) => {
   }
 });
 
-// Profile route
 router.get("/profile", isLoggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -131,7 +122,6 @@ router.get("/profile", isLoggedIn, async (req, res) => {
       $or: [{ sender: user._id }, { receiver: user._id }]
     }).populate("sender receiver");
 
-    // Fetch leaderboard (assuming it's based on user balance or transaction count)
     const leaderboard = await User.find().sort({ balance: -1 }).limit(10); 
 
     res.render("pages/dashboard/profile", { user, transactions, leaderboard, messages: req.flash() });
@@ -141,7 +131,6 @@ router.get("/profile", isLoggedIn, async (req, res) => {
   }
 });
 
-// Stats route
 router.get("/stats", isLoggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -189,15 +178,12 @@ router.get("/stats", isLoggedIn, async (req, res) => {
 
 router.get('/dashboard/bill', isLoggedIn, async (req, res) => {
   try {
-      // Get user's wallet balance
       const user = await User.findById(req.user._id);
       
-      // Get recent bill payments
       const recentPayments = await BillPayment.find({ userId: req.user._id })
           .sort({ paymentDate: -1 })
           .limit(parseInt(process.env.BILL_PAYMENT_HISTORY_LIMIT) || 4);
       
-      // Get current offers
       const offers = [
           {
               id: 'offer1',
@@ -229,7 +215,6 @@ router.get('/dashboard/bill', isLoggedIn, async (req, res) => {
           }
       ];
       
-      // Get quick pay options
       const quickPayOptions = await getQuickPayOptions(req.user._id);
       
       res.render("pages/dashboard/bill", {
@@ -249,10 +234,8 @@ router.get('/dashboard/bill', isLoggedIn, async (req, res) => {
   }
 });
 
-// Helper function to get quick pay options
 async function getQuickPayOptions(userId) {
   try {
-      // Fetch user's frequent billers from transaction history
       const frequentBillers = await BillPayment.aggregate([
           { $match: { userId: userId } },
           { $sort: { paymentDate: -1 } },
@@ -266,7 +249,6 @@ async function getQuickPayOptions(userId) {
           { $limit: 3 }
       ]);
       
-      // Map provider names to image paths
       const providerImages = {
           'Tata Power': '/images/tata.png',
           'Jio Fiber': '/images/jio.png',
@@ -290,15 +272,10 @@ async function getQuickPayOptions(userId) {
   }
 }
 
-/**
-* POST /dashboard/bills/pay
-* Process bill payment using e-Rupee wallet or coins
-*/
 router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
   try {
       const { billType, provider, consumerNumber, amount, paymentMethod, coinPayment } = req.body;
       
-      // Validate required fields
       if (!billType || !provider || !consumerNumber || !amount || !paymentMethod) {
           return res.status(400).json({ 
               success: false, 
@@ -306,7 +283,6 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
           });
       }
       
-      // Validate amount
       if (isNaN(amount) || amount <= 0) {
           return res.status(400).json({ 
               success: false, 
@@ -316,10 +292,8 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
 
       const paymentAmount = parseFloat(amount);
       
-      // Get user's current balance
       const user = await User.findById(req.user._id);
       
-      // Check minimum balance requirement (for wallet payments only)
       if (paymentMethod === 'wallet') {
           const minBalance = parseFloat(process.env.BILL_TRANSACTION_MIN_BALANCE) || 100;
           if (user.walletBalance < minBalance) {
@@ -329,7 +303,6 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
               });
           }
           
-          // Check if user has enough balance
           if (user.walletBalance < paymentAmount) {
               return res.status(400).json({
                   success: false,
@@ -337,7 +310,7 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
               });
           }
       } 
-      // Validate coin payment
+
       else if (paymentMethod === 'coins') {
           if (!coinPayment) {
               return res.status(400).json({
@@ -346,7 +319,6 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
               });
           }
           
-          // Calculate total coin value
           const coinValues = {
               quarters: 0.25,
               dimes: 0.10,
@@ -366,7 +338,7 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
               }
           });
           
-          // Check if coin payment is sufficient
+
           if (totalCoinValue < paymentAmount) {
               return res.status(400).json({
                   success: false,
@@ -374,10 +346,8 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
               });
           }
           
-          // Calculate change if applicable
           const change = totalCoinValue - paymentAmount;
           if (change > 0) {
-              // Add change to user's wallet
               user.walletBalance += change;
           }
       } else {
@@ -387,7 +357,6 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
           });
       }
       
-      // Check daily limit
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
@@ -406,11 +375,9 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
           });
       }
       
-      // Calculate transaction fee if applicable
       const transactionFee = paymentAmount * (parseFloat(process.env.BILL_TRANSACTION_FEE) || 0);
       let totalDeduction = paymentAmount + transactionFee;
       
-      // Create transaction record
       const transaction = new Transaction({
           userId: req.user._id,
           type: 'BILL_PAYMENT',
@@ -422,12 +389,10 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
           paymentMethod: paymentMethod
       });
       
-      // Add coin payment details if applicable
       if (paymentMethod === 'coins') {
           transaction.coinPayment = coinPayment;
       }
       
-      // Create bill payment record
       const billPayment = new BillPayment({
           userId: req.user._id,
           billType,
@@ -440,56 +405,46 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
           paymentMethod: paymentMethod
       });
       
-      // Calculate rewards if enabled
       let rewardsAmount = 0;
       if (process.env.BILL_PAYMENT_REWARDS_ENABLED === 'true') {
           const rewardPercentage = parseFloat(process.env.BILL_PAYMENT_REWARD_PERCENTAGE) || 0.02;
           const specialCategories = (process.env.BILL_PAYMENT_SPECIAL_CATEGORIES || '').split(',');
           
-          // Special categories might have different reward rates
           if (specialCategories.includes(billType)) {
-              rewardsAmount = paymentAmount * (rewardPercentage * 2); // Double rewards for special categories
+              rewardsAmount = paymentAmount * (rewardPercentage * 2);
           } else {
               rewardsAmount = paymentAmount * rewardPercentage;
           }
       }
-      
-      // Apply special offers
-      // Check for cashback on electricity bills
+
       if (billType === 'electricity' && req.body.code === 'ERUPEE10') {
           const cashbackAmount = Math.min(paymentAmount * 0.1, 100);
           rewardsAmount += cashbackAmount;
       }
       
-      // Check for 2X rewards on tax payments
       if (billType === 'tax') {
           rewardsAmount *= 2;
       }
       
-      // Check for zero transaction fee on water bills
       if (billType === 'water') {
-          totalDeduction = paymentAmount; // No transaction fee
+          totalDeduction = paymentAmount;
       }
       
-      // Update user's wallet balance if using wallet payment
       if (paymentMethod === 'wallet') {
           user.walletBalance -= totalDeduction;
       }
       
-      // Add rewards to wallet if applicable
       if (rewardsAmount > 0) {
           user.walletBalance += rewardsAmount;
           user.rewardsEarned = (user.rewardsEarned || 0) + rewardsAmount;
       }
       
-      // Save all changes in a transaction
       await Promise.all([
           user.save(),
           transaction.save(),
           billPayment.save()
       ]);
       
-      // Send notification
       sendNotification(
           req.user._id,
           'Bill Payment Successful',
@@ -498,7 +453,6 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
           process.env.BILL_PAYMENT_SUCCESS_TEMPLATE
       );
       
-      // Return success response
       return res.status(200).json({
           success: true,
           message: 'Bill payment successful',
@@ -519,10 +473,6 @@ router.post('dashboard/bill/pay', isLoggedIn, async (req, res) => {
   }
 });
 
-/**
-* GET /dashboard/bills/verify-coins
-* Verify coin payment is valid and calculate change
-*/
 router.post('dashboard/bill/verify-coins', isLoggedIn, (req, res) => {
   try {
       const { amount, coinPayment } = req.body;
@@ -536,7 +486,6 @@ router.post('dashboard/bill/verify-coins', isLoggedIn, (req, res) => {
       
       const paymentAmount = parseFloat(amount);
       
-      // Calculate total coin value
       const coinValues = {
           quarters: 0.25,
           dimes: 0.10,
@@ -559,7 +508,6 @@ router.post('dashboard/bill/verify-coins', isLoggedIn, (req, res) => {
           }
       });
       
-      // Check if coin payment is sufficient
       if (totalCoinValue < paymentAmount) {
           return res.status(400).json({
               success: false,
@@ -568,7 +516,6 @@ router.post('dashboard/bill/verify-coins', isLoggedIn, (req, res) => {
           });
       }
       
-      // Calculate change if applicable
       const change = totalCoinValue - paymentAmount;
       
       return res.status(200).json({
@@ -587,10 +534,6 @@ router.post('dashboard/bill/verify-coins', isLoggedIn, (req, res) => {
   }
 });
 
-/**
-* GET /dashboard/bills/history
-* Get user's bill payment history
-*/
 router.get('dashboard/bill/history', isLoggedIn, async (req, res) => {
   try {
       const payments = await BillPayment.find({ userId: req.user._id })
@@ -619,10 +562,6 @@ router.get('dashboard/bill/history', isLoggedIn, async (req, res) => {
   }
 });
 
-/**
-* GET /dashboard/bills/offers
-* Get current bill payment offers
-*/
 router.get('dashboard/bill/offers', isLoggedIn, (req, res) => {
   try {
       const offers = [
@@ -669,10 +608,6 @@ router.get('dashboard/bill/offers', isLoggedIn, (req, res) => {
   }
 });
 
-/**
-* GET /dashboard/bills/providers/:billType
-* Get service providers for a specific bill type
-*/
 router.get('dashboard/bill/providers/:billType', isLoggedIn, (req, res) => {
   const { billType } = req.params;
   
@@ -715,15 +650,10 @@ router.get('dashboard/bill/providers/:billType', isLoggedIn, (req, res) => {
   }
 });
 
-/**
-* GET /dashboard/bills/quick-pay
-* Get user's saved billers for quick pay
-*/
 router.get('dashboard/bill/quick-pay', isLoggedIn, async (req, res) => {
   try {
       const quickPayOptions = await getQuickPayOptions(req.user._id);
       
-      // Render the quickpay.ejs template instead of returning JSON
       return res.render('pages/quickpay', {
           billers: quickPayOptions,
           user: req.user

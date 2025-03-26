@@ -1,9 +1,7 @@
 require("dotenv").config();
-
 const express = require("express");
 const path = require("path");
 const app = express();
-const port = 3000;
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
@@ -17,7 +15,7 @@ const authRouter = require("./routes/auth/auth.js");
 const homeRouter = require("./routes/home/home.js");
 const dashboardRouter = require("./routes/dashboard/dashboard.js");
 
-const MONGO_URL = "mongodb://localhost:27017/e-rupee";
+const MONGO_URL = process.env.MONGO_URL;
 
 async function main() {
     mongoose.connect(MONGO_URL);

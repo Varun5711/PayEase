@@ -6,12 +6,8 @@
     <title>Login | e-Rupee</title>
     <link rel="icon" type="image/png" href="/images/main.gif">
     
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         .abcd {
             height: 84.8vh;
@@ -40,7 +36,6 @@
                 <div class="alert alert-danger"><%= errorMsg %></div>
             <% } %>
 
-            <!-- Show Login Form Only If User Is Not Logged In -->
             <% if (!currentUser) { %>
                 <form action="/login" method="POST">
                     <div class="mb-3">
@@ -67,18 +62,13 @@
                     <a href="/signup" class="text-decoration-none">Create a new account</a>
                 </div>
             <% } else { %>
-                <!-- Logout Button When Logged In -->
                 <div class="text-center mt-3">
                     <a href="/logout" class="btn btn-danger w-100">Logout</a>
                 </div>
             <% } %>
         </div>
     </div>
-
-    <!-- Include Footer -->
     <%- include('../../layouts/footer') %>
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

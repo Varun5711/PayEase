@@ -5,11 +5,11 @@ function typeEffect() {
     for (let i = 0; i <= text.length; i++) {
         setTimeout(() => {
             typingText.innerHTML = text.substring(0, i);
-        }, i * 100); // Typing speed (100ms per letter)
+        }, i * 100);
     }
 }
 
-typeEffect(); // Start animation
+typeEffect();
 
 setInterval(() => {
     typeEffect();
@@ -27,16 +27,15 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             opacity: 0,
             filter: "blur(10px)",
-            y: 50, // Move text slightly down
+            y: 50,
         },
         {
             opacity: 1,
             filter: "blur(0px)",
             y: 0,
             duration: 1.5,
-            stagger: 0.2, // Delays each element slightly for a smooth effect
+            stagger: 0.2,
             ease: "power2.out",
         }
     );
 });
-// Get the current user ID for filtering transactions

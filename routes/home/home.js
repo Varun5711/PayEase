@@ -83,5 +83,3 @@ router.get("/features" , (req , res) => {
 });
 
 module.exports = router;
-
-module.exports = router;

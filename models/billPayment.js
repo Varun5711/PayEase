@@ -1,5 +1,3 @@
-// models/BillPayment.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -54,7 +52,6 @@ const billPaymentSchema = new Schema({
     }
 }, { timestamps: true });
 
-// Index for faster queries
 billPaymentSchema.index({ userId: 1, paymentDate: -1 });
 billPaymentSchema.index({ provider: 1, consumerNumber: 1 });
 

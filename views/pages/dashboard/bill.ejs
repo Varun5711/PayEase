@@ -6,14 +6,10 @@
     <title>Bill Payment | e-Coin</title>
     <link rel="icon" type="image/gif" href="/images/main.gif">
     
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/style.css">
-    
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+        
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -201,7 +197,6 @@
 </head>
 
 <body>
-    <!-- Header/Navbar -->
     <%- include('../../layouts/navbar') %>
     
     <div class="container my-5">
@@ -212,7 +207,6 @@
             </div>
         </div>
         
-        <!-- Bill Categories -->
         <div class="row mb-5 blur-text">
             <div class="col-12">
                 <h2 class="section-title mb-4">Payment Categories</h2>
@@ -244,7 +238,6 @@
         </div>
         
         <div class="row">
-            <!-- Bill Payment Form -->
             <div class="col-md-8 mb-4 blur-text">
                 <div class="card bill-card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -303,7 +296,6 @@
                     </div>
                 </div>
                 
-                <!-- Special Offers -->
                 <div class="popular-bills">
                     <h3 class="section-title mb-4">Special Offers</h3>
                     <div class="row">
@@ -343,7 +335,6 @@
                 </div>
             </div>
             
-            <!-- Recent Payments and Quick Pay -->
             <div class="col-md-4 blur-text">
                 <div class="card bill-card shadow mb-4">
                     <div class="card-header">
@@ -393,7 +384,6 @@
                     </div>
                 </div>
                 
-                <!-- Quick Pay -->
                 <div class="card bill-card shadow">
                     <div class="card-header">
                         <h4 class="m-0">Quick Pay</h4>
@@ -439,10 +429,8 @@
         </div>
     </div>
     
-    <!-- Footer -->
     <%- include('../../layouts/footer') %>
     
-    <!-- GSAP Animation Script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -460,7 +448,6 @@
         });
     </script>
     
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
