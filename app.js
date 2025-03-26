@@ -57,24 +57,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.engine('ejs', ejsMate);
 
-// ✅ Move session middleware ABOVE Passport
-app.use(session(sessionOptions)); // Session must be initialized first
+app.use(session(sessionOptions));
 app.use(flash());
 
-// ✅ Initialize Passport AFTER session middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ Configure Passport Local Strategy
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// ✅ Ensure user is stored in `res.locals`
 app.use((req, res, next) => {
     res.locals.successMsg = req.flash("success");
     res.locals.errorMsg = req.flash("error");
-    res.locals.currentUser = req.user || null; // Prevents `undefined` issues
+    res.locals.currentUser = req.user || null;
     next();
 });
 
