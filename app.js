@@ -15,7 +15,7 @@ const authRouter = require("./routes/auth/auth.js");
 const homeRouter = require("./routes/home/home.js");
 const dashboardRouter = require("./routes/dashboard/dashboard.js");
 
-const MONGO_URL = process.env.MONGO_URL;
+const MONGO_URL = process.env.ATLAS_DB_URL;
 
 async function main() {
     mongoose.connect(MONGO_URL);
