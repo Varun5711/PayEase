@@ -1,14 +1,7 @@
-// models/Notification.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-/**
- * Notification Schema
- * Stores user notifications for the e-Rupee application
- */
 const notificationSchema = new Schema({
-    // User this notification belongs to
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -16,35 +9,30 @@ const notificationSchema = new Schema({
         index: true
     },
     
-    // Notification title
     title: {
         type: String,
         required: true,
         trim: true
     },
     
-    // Notification message/body
     message: {
         type: String,
         required: true,
         trim: true
     },
     
-    // Notification type (success, info, warning, error)
     type: {
         type: String,
         enum: ['success', 'info', 'warning', 'error'],
         default: 'info'
     },
     
-    // Read status
     isRead: {
         type: Boolean,
         default: false,
         index: true
     },
     
-    // Optional related entity (e.g., transactionId, billPaymentId)
     relatedEntity: {
         entityType: {
             type: String,
@@ -57,31 +45,26 @@ const notificationSchema = new Schema({
         }
     },
     
-    // Optional action URL for when notification is clicked
     actionUrl: {
         type: String,
         trim: true
     },
     
-    // Metadata - can store any additional information
     metadata: {
         type: Map,
         of: Schema.Types.Mixed
     }
 }, 
 {
-    timestamps: true, // Adds createdAt and updatedAt
+    timestamps: true, 
     
-    // Add virtual for calculating notification age
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
 
-// Index for efficient queries
 notificationSchema.index({ userId: 1, createdAt: -1 });
 notificationSchema.index({ userId: 1, isRead: 1, createdAt: -1 });
 
-// Virtual for time since notification was created (for display purposes)
 notificationSchema.virtual('timeSince').get(function() {
     const now = new Date();
     const diffTime = Math.abs(now - this.createdAt);
@@ -104,7 +87,6 @@ notificationSchema.virtual('timeSince').get(function() {
     }
 });
 
-// Static method to mark all as read for a user
 notificationSchema.statics.markAllAsRead = function(userId) {
     return this.updateMany(
         { userId, isRead: false },
@@ -112,7 +94,6 @@ notificationSchema.statics.markAllAsRead = function(userId) {
     );
 };
 
-// Static method to get unread count for a user
 notificationSchema.statics.getUnreadCount = function(userId) {
     return this.countDocuments({ userId, isRead: false });
 };
